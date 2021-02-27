@@ -1,13 +1,14 @@
 #! /bin/bash
 
+cd ~/
 sudo apt install -y python3 python3-pip git libmysqlclient-dev mysql-server
 sudo apt install -y python3-pip
 
+git clone https://github.com/free5gmano/kube5gnfvo.git
 cd kube5gnfvo/
 sudo pip3 install -r requirement.txt
 
 #install multus
-git clone https://github.com/free5gmano/kube5gnfvo.git
 cd ./example/
 kubectl apply -f multus-daemonset-pre-1.16.yml
 

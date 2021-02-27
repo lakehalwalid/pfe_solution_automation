@@ -1,0 +1,59 @@
+#! /bin/bash
+
+sudo apt install -y python3 python3-pip git libmysqlclient-dev mysql-server
+sudo apt install -y python3-pip
+
+cd kube5gnfvo/
+sudo pip3 install -r requirement.txt
+
+#install multus
+git clone https://github.com/free5gmano/kube5gnfvo.git
+cd ./example/
+kubectl apply -f multus-daemonset-pre-1.16.yml
+
+#install openvswitch
+sudo apt install openvswitch-switch -y
+sudo ovs-vsctl add-br br1
+
+#install ovs-cni
+kubectl apply -f ovs-cni.yaml
+
+cat <<EOF >./ovs-net-crd.yaml
+apiVersion: "k8s.cni.cncf.io/v1"
+kind: NetworkAttachmentDefinition
+metadata:
+  name: ovs-net
+  annotations:
+    k8s.v1.cni.cncf.io/resourceName: ovs-cni.network.kubevirt.io/br1
+spec:
+  config: '{
+      "cniVersion": "0.3.1",
+      "type": "ovs",
+      "bridge": "br1"
+    }'
+EOF
+kubectl apply -f ovs-net-crd.yaml
+
+#install etcd operator
+cd ./etcd-cluster/rbac/
+./create_role.sh
+cd ..
+kubectl apply -f deployment.yaml
+
+# check with kubectl get customresourcedefinitions
+
+#install Metrics Server:
+cd ../metrics-server/
+kubectl apply -f ./
+
+#install Node Exporter:
+cd ..
+kubectl apply -f prom-node-exporter.yaml
+
+#install Kubevirt:
+cd ./kubevirt/
+kubectl apply -f kubevirt-operator.yaml
+kubectl apply -f kubevirt-cr.yaml
+
+#kubevirt-py
+pip3 install git+https://github.com/yanyan8566/client-python

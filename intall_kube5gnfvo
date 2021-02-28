@@ -40,8 +40,8 @@ cd ./etcd-cluster/rbac/
 ./create_role.sh
 cd ..
 kubectl apply -f deployment.yaml
-
 # check with kubectl get customresourcedefinitions
+kubectl apply -f ./
 
 #install Metrics Server:
 cd ../metrics-server/

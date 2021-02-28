@@ -1,0 +1,58 @@
+#! /bin/bash
+
+
+sudo apt update
+sudo apt install -y openjdk-8-jdk openjdk-8-jre
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+export JRE_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre
+
+wget https://downloads.apache.org/kafka/2.7.0/kafka_2.13-2.7.0.tgz
+tar -xzf kafka_2.13-2.7.0.tgz
+#cd kafka_2.13-2.7.0
+
+ln -s kafka_2.13-2.7.0  kafka
+echo "export KAFKA_HOME=$HOME/kafka" >> ~/.bashrc
+echo "export PATH=$PATH:$KAFKA_HOME:$KAFKA_HOME/bin" >> ~/.bashrc
+source ~/.bashrc #reload
+
+
+#sudo nano /etc/systemd/system/zookeeper.service
+
+echo "
+[Unit]
+Requires=network.target remote-fs.target
+After=network.target remote-fs.target
+[Service]
+Type=simple
+User=$USER
+ExecStart=$KAFKA_HOME/bin/zookeeper-server-start.sh $KAFKA_HOME/config/zookeeper.properties
+ExecStop=$KAFKA_HOME/bin/zookeeper-server-stop.sh
+Restart=on-abnormal
+[Install]
+WantedBy=multi-user.target" | sudo tee /etc/systemd/system/zookeeper.service
+
+
+
+
+#sudo nano /etc/systemd/system/kafka.service
+
+echo "
+[Unit]
+Requires=zookeeper.service
+After=zookeeper.service
+[Service]
+Type=simple
+User=$USER
+ExecStart=/bin/sh -c '$KAFKA_HOME/bin/kafka-server-start.sh $KAFKA_HOME/config/server.properties > $KAFKA_HOME/kafka.log 2>&1'
+ExecStop=$KAFKA_HOME/bin/kafka-server-stop.sh
+Restart=on-abnormal
+[Install]
+WantedBy=multi-user.target" | sudo tee /etc/systemd/system/kafka.service
+
+
+
+sudo systemctl start zookeeper.service
+sudo systemctl start kafka.service
+
+
+# kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic NewTopic

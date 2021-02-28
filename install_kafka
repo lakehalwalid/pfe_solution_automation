@@ -12,9 +12,10 @@ tar -xzf kafka_2.13-2.7.0.tgz
 
 ln -s kafka_2.13-2.7.0  kafka
 echo "export KAFKA_HOME=$HOME/kafka" >> ~/.bashrc
+source ~/.bashrc
 echo "export PATH=$PATH:$KAFKA_HOME:$KAFKA_HOME/bin" >> ~/.bashrc
 source ~/.bashrc #reload
-
+source ~/.profile
 
 #sudo nano /etc/systemd/system/zookeeper.service
 
@@ -49,10 +50,9 @@ Restart=on-abnormal
 [Install]
 WantedBy=multi-user.target" | sudo tee /etc/systemd/system/kafka.service
 
-
+sudo systemctl daemon-reload
 
 sudo systemctl start zookeeper.service
 sudo systemctl start kafka.service
-
 
 # kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic NewTopic

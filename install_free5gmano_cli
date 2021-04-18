@@ -1,0 +1,12 @@
+#! /bin/bash
+
+
+# install service-mapping-plugin-framework
+cd && git clone https://github.com/free5gmano/service-mapping-plugin-framework.git
+cd service-mapping-plugin-framework
+sudo python3 setup.py install
+
+#install free5gmano-cli
+cd && git clone https://github.com/free5gmano/free5gmano-cli.git
+cd free5gmano-cli
+pip3 install -e .

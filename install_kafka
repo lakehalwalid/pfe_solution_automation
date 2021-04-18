@@ -12,8 +12,10 @@ tar -xzf kafka_2.13-2.7.0.tgz
 
 ln -s kafka_2.13-2.7.0  kafka
 echo "export KAFKA_HOME=$HOME/kafka" >> ~/.bashrc
+export KAFKA_HOME=$HOME/kafka
 source ~/.bashrc
 echo "export PATH=$PATH:$KAFKA_HOME:$KAFKA_HOME/bin" >> ~/.bashrc
+export PATH=$PATH:$KAFKA_HOME:$KAFKA_HOME/bin
 source ~/.bashrc #reload
 source ~/.profile
 

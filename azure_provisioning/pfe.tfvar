@@ -1,0 +1,4 @@
+resource_group_name = "f5gmano-rg"
+location = "francecentral"
+prefix = "f5gmano-node"
+vm_count = 2

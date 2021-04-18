@@ -1,0 +1,10 @@
+#! /bin/bash
+
+sudo apt-get update -yq
+
+sudo apt-get install linux-image-5.0.0-23-generic linux-headers-5.0.0-23-generic -yq
+
+sudo DEBIAN_FRONTEND=noninteractive  apt remove -y linux-headers-$(uname -r) \
+linux-image-$(uname -r) \
+linux-image-unsigned-$(uname -r)
+

@@ -1,0 +1,13 @@
+#! /bin/bash
+
+#install ovs
+sudo apt install openvswitch-switch -y
+
+#add bridge
+sudo ovs-vsctl add-br br1
+
+#get master's ip
+master_ip=$(kubectl get node -o wide | awk {'print $6'} | head -n2 | tail -n1)
+
+#connect bridges using VXLAN
+sudo ovs-vsctl add-port br1 vxlan -- set Interface vxlan type=vxlan options:remote_ip=$master_ip

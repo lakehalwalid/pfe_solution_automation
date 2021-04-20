@@ -17,6 +17,11 @@ sleep 15
 sudo apt install openvswitch-switch -y
 sudo ovs-vsctl add-br br1
 
+#get worker ip 
+worker_ip=$(kubectl get node -o wide | awk {'print $6'} | head -n3 | tail -n1)
+#Connect Bridges Using VXLAN
+sudo ovs-vsctl add-port br1 vxlan -- set Interface vxlan type=vxlan options:remote_ip=$worker_ip
+
 #install ovs-cni
 kubectl apply -f ovs-cni.yaml
 sleep 15
